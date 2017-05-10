@@ -1,0 +1,20 @@
+<div class="nav">
+	{{#if success}}
+		<p>{{success}}</p>
+	{{/if}}
+	
+	{{#if error}}
+		<p>{{error}}</p>
+	{{/if}}
+	
+	{{#if user}}
+		<div><a title="主页" href="/">home</a></div>
+		<div><a title="发表" href="/publish">publish</a></div>
+		<div><a title="退出" href="/logout">logout</a></div>
+	{{else}}
+		<div><a title="主页" href="/">home</a></div>
+		<div><a title="登录" href="/login">login</a></div>
+		<div><a title="注册" href="/register">register</a></div>
+	{{/if}}
+	<hr />
+</div>
