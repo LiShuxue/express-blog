@@ -1,4 +1,5 @@
 var mongodb = require('../db/db');
+var markdown = require('markdown').markdown;
 
 function Blog(author, category, title, content){
 	this.author = author;
@@ -23,7 +24,8 @@ Blog.prototype.save = function(callback){
 		author: this.author,
 		category: this.category,
 		title: this.title,
-		content: this.content,
+		markdownContent: this.content,
+		htmlContent: markdown.toHTML(this.content),
 		time: time
 	};
 
@@ -45,7 +47,6 @@ Blog.prototype.save = function(callback){
 				}
 				callback(null);
 			});
-
 		});
 	});
 }
@@ -67,12 +68,12 @@ Blog.get = function(title, callback){
 				query.title = title;
 			}
 
-			collection.find(query).sort({time: -1}).toArray(function(err, docs){      //按时间（`time`）排序。1是升序，也是默认的。-1是降序
+			collection.find(query).sort({time: -1}).toArray(function(err, blogs){      //按时间（`time`）排序。1是升序，也是默认的。-1是降序
 				mongodb.close();
 				if(err){
 					return callback(err);
 				}
-				callback(null, docs);
+				callback(null, blogs);
 			});
 
 		});

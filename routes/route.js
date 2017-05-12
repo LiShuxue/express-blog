@@ -10,6 +10,8 @@
 //partials文件夹下为公用的一些组件，首先需要注册路径，hbs.registerPartials(__dirname + '/views/partials');
 //使用组件的时候：在模板文件中，{{> filename}} 
 
+//'{{}}' 会将内容做HTML编码转换，这里你输入的HTML标签代码什么的都会按你输入的字符输出；{{{}}}则不做转换，你在里面输入<h1>就可以得到一个h1标签
+
 var crypto = require('crypto');                                     //crypto 是 Node.js 的一个核心模块，我们用它生成散列值来加密密码。
 var User = require('../models/user');
 var Blog = require('../models/blog');
