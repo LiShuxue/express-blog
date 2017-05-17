@@ -15,6 +15,8 @@
 var crypto = require('crypto');                                     //crypto 是 Node.js 的一个核心模块，我们用它生成散列值来加密密码。
 var User = require('../models/user');
 var Blog = require('../models/blog');
+var multer = require('multer');
+var upload = multer({dest: './upload'});
 
 module.exports = function(app){
 
@@ -161,5 +163,30 @@ module.exports = function(app){
 		req.session.user = null;
 		req.flash('success', '退出成功!');
 		res.redirect('/');
+	});
+
+	////文件上传的路由控制
+	app.get('/upload', checkLogin);
+	app.get('/upload', function (req, res) {
+		res.render('upload', { 
+	    	title :'上传',
+	    	user: req.session.user,
+			success: req.flash('success').toString(),
+			error: req.flash('error').toString()
+		});
+	});
+	app.post('/upload', checkLogin);
+	app.post('/upload', upload.fields([
+	    {name: 'file1'},
+	    {name: 'file2'},
+	    {name: 'file3'},
+	    {name: 'file4'},
+	    {name: 'file5'}
+	]), function(req, res, next){
+	    for(var i in req.files){
+	        console.log(req.files[i]);
+	    }
+	    req.flash('success', '文件上传成功!');
+	    res.redirect('/upload');
 	});
 };                              
