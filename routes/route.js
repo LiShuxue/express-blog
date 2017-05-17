@@ -37,14 +37,14 @@ module.exports = function(app){
 
 	//home页的路由控制
 	app.get('/', function (req, res) {
-		Blog.get(null, function(err, blogs){
+		Blog.getAll(null, function(err, blogs){
 			if(err){
 				blogs = [];
 			}
 			res.render('home', { 
 				title: '主页',
-				user: req.session.user,
 				blogs: blogs,
+				user: req.session.user,
 				success: req.flash('success').toString(),
 				error: req.flash('error').toString() 
 			});
@@ -131,7 +131,7 @@ module.exports = function(app){
 			req.flash('success', user.username+'登录成功！');
 			res.redirect('/');
 		});
-	})
+	});
 
 	//发表页的路由控制
 	app.get('/publish', checkLogin);
@@ -165,7 +165,7 @@ module.exports = function(app){
 		res.redirect('/');
 	});
 
-	////文件上传的路由控制
+	//文件上传的路由控制
 	app.get('/upload', checkLogin);
 	app.get('/upload', function (req, res) {
 		res.render('upload', { 
@@ -188,5 +188,51 @@ module.exports = function(app){
 	    }
 	    req.flash('success', '文件上传成功!');
 	    res.redirect('/upload');
+	});
+
+	//用户文章列表界面
+	app.get('/u/:author', function(req, res){
+		//检查用户名是否已经存在
+		User.get(req.params.author, function(err, user){
+			if(err){
+				req.flash('error', err);
+				return res.redirect('/');                            //如果出现错误，重定向到home页
+			}
+			if(!user){
+				req.flash('error', req.params.author + '用户不存在！');
+				return res.redirect('/');
+			}
+			//如果存在则返回该用户的所有的文章
+			Blog.getAll(req.params.author, function(err, blogs){
+				if (err) {
+			        req.flash('error', err); 
+			        return res.redirect('/');
+			    } 
+				res.render('user', { 
+					title: user.username,
+					blogs: blogs,
+					user: req.session.user,
+					success: req.flash('success').toString(),
+					error: req.flash('error').toString() 
+				});
+			});
+		});
+	});
+
+	//文章界面
+	app.get('/u/:author/:category/:title', function(req, res){
+		Blog.getOne(req.params.author, req.params.category, req.params.title, function(err, blog){
+			if (err) {
+		        req.flash('error', err); 
+		        return res.redirect('/');
+		    } 
+			res.render('article', { 
+				title: req.params.title,
+				blog: blog,
+				user: req.session.user,
+				success: req.flash('success').toString(),
+				error: req.flash('error').toString() 
+			});
+		});
 	});
 };                              

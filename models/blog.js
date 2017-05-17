@@ -51,7 +51,7 @@ Blog.prototype.save = function(callback){
 	});
 }
 
-Blog.get = function(title, callback){
+Blog.getAll = function(author, callback){
 	mongodb.open(function(err, db){
 		if(err){
 			return callback(err);
@@ -64,8 +64,8 @@ Blog.get = function(title, callback){
 			}
 
 			var query = {};
-			if(title){
-				query.title = title;
+			if(author){
+				query.author = author;
 			}
 
 			collection.find(query).sort({time: -1}).toArray(function(err, blogs){      //按时间（`time`）排序。1是升序，也是默认的。-1是降序
@@ -76,6 +76,33 @@ Blog.get = function(title, callback){
 				callback(null, blogs);
 			});
 
+		});
+	});
+}
+
+Blog.getOne = function(author, category, title, callback){
+	mongodb.open(function(err, db){
+		if(err){
+			return callback(err);
+		}
+
+		db.collection('blogs', function(err, collection){
+			if(err){
+				mongodb.close();
+				return callback(err);
+			}
+
+			collection.findOne({
+				"author": author,
+				"category": category,
+				"title": title
+			}, function(err, blog){
+				mongodb.close();
+				if(err){
+					return callback(err);
+				}
+				callback(null, blog);
+			});
 		});
 	});
 }
