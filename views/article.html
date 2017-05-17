@@ -1,9 +1,9 @@
 {{> nav}}
 <div class="article">
 	<h1>文章页面</h1>
-	<p><h2><a href="u/{{author}}/{{category}}/{{title}}">{{blog.title}}</a></h2></p>
+	<p><h2><a href="/u/{{blog.author}}/{{blog.category}}/{{blog.title}}">{{blog.title}}</a></h2></p>
 	<p class="info">
-		作者：<a href="u/{{author}}">{{blog.author}}</a>
+		作者：<a href="/u/{{blog.author}}">{{blog.author}}</a>
 		日期：{{blog.time.minute}}
 	</p>
 	<div>{{{blog.htmlContent}}}</div>
