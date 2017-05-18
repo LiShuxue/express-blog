@@ -45,10 +45,10 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24 * 30                  //30天
     },
     resave: false,                                      //强制session保存到session store中。即使在请求中这个session没有被修改。
-    saveUninitialized: true,                            //强制没有“初始化”的session保存到storage中，没有初始化的session指的是：刚被创建没有被修改。
-    store: new MongoStore({                             //store:保存session的地方，默认是一个MemoryStore实例
-        url: dbUrl
-    })
+    saveUninitialized: true                            //强制没有“初始化”的session保存到storage中，没有初始化的session指的是：刚被创建没有被修改。
+    // store: new MongoStore({                             //store:保存session的地方，默认是一个MemoryStore实例
+    //     url: dbUrl
+    // })
 }));
 
 //route功能
