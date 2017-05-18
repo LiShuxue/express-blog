@@ -24,8 +24,7 @@ Blog.prototype.save = function(callback){
 		author: this.author,
 		category: this.category,
 		title: this.title,
-		markdownContent: this.content,
-		htmlContent: markdown.toHTML(this.content),
+		content: this.content,
 		time: time
 	};
 
@@ -73,6 +72,9 @@ Blog.getAll = function(author, callback){
 				if(err){
 					return callback(err);
 				}
+				blogs.forEach(function(blog) {
+					blog.htmlContent = markdown.toHTML(blog.content);
+				});
 				callback(null, blogs);
 			});
 
@@ -101,6 +103,7 @@ Blog.getOne = function(author, category, title, callback){
 				if(err){
 					return callback(err);
 				}
+				blog.htmlContent = markdown.toHTML(blog.content);
 				callback(null, blog);
 			});
 		});
