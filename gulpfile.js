@@ -14,7 +14,6 @@ gulp.task('default', function(){
     	 './views/**/*.html'
     	],
     	function(){
-    		console.log('test........................................................');
         	gulp.run('start');
     	}
     );
