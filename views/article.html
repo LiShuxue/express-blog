@@ -6,6 +6,10 @@
 		作者：<a href="/u/{{blog.author}}">{{blog.author}}</a>
 		日期：{{blog.time.minute}}
 	</p>
+	{{#if isSameOne}}
+		<span><a href="/update/{{blog.author}}/{{blog.category}}/{{blog.title}}">编辑</a></span>
+		<span><a href="/delete/{{blog.author}}/{{blog.category}}/{{blog.title}}">删除</a></span>
+	{{/if}}
 	<div>{{{blog.htmlContent}}}</div>
 </div>
 

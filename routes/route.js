@@ -231,8 +231,54 @@ module.exports = function(app){
 				blog: blog,
 				user: req.session.user,
 				success: req.flash('success').toString(),
+				error: req.flash('error').toString(),
+				isSameOne: req.session.user &&  req.session.user.username === blog.author
+			});
+		});
+	});
+
+	//文章修改界面
+	app.get('/update/:author/:category/:title', checkLogin);
+	app.get('/update/:author/:category/:title', function(req, res){
+		Blog.getOne(req.params.author, req.params.category, req.params.title, function(err, blog){
+			if (err) {
+		        req.flash('error', err); 
+		        return res.redirect('/');
+		    } 
+			res.render('update', { 
+				title: req.params.title,
+				blog: blog,
+				user: req.session.user,
+				success: req.flash('success').toString(),
 				error: req.flash('error').toString() 
 			});
+		});
+	});
+	app.post('/update/:author/:category/:title', checkLogin);
+	app.post('/update/:author/:category/:title', function(req, res){
+		Blog.update(req.params.author, req.params.category, req.params.title, req.body.content, function(err){
+			var updateUrl = encodeURI('/update/' + req.params.author + '/' + req.params.category + '/' + req.params.title);
+			var articleUrl = encodeURI('/u/' + req.params.author + '/' + req.params.category + '/' + req.params.title);
+			
+			if (err) {
+		        req.flash('error', err); 
+		        return res.redirect(updateUrl);
+		    } 
+			req.flash('success', '修改成功!');
+    		res.redirect(articleUrl);
+		});
+	});
+
+	//文章删除
+	app.get('/delete/:author/:category/:title', checkLogin);
+	app.get('/delete/:author/:category/:title', function(req, res){
+		Blog.delete(req.params.author, req.params.category, req.params.title, function(err){
+			if (err) {
+		        req.flash('error', err); 
+		        return res.redirect('/');
+		    } 
+			req.flash('success', '删除成功!');
+    		res.redirect('/');
 		});
 	});
 };                              

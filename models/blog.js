@@ -109,3 +109,59 @@ Blog.getOne = function(author, category, title, callback){
 		});
 	});
 }
+
+Blog.update = function(author, category, title, content, callback){
+	mongodb.open(function(err, db){
+		if(err){
+			return callback(err);
+		}
+
+		db.collection('blogs', function(err, collection){
+			if(err){
+				mongodb.close();
+				return callback(err);
+			}
+
+			collection.update({
+				"author": author,
+				"category": category,
+				"title": title
+			}, {
+				$set:{"content": content}
+			}, function(err){
+				mongodb.close();
+				if(err){
+					return callback(err);
+				}
+				callback(null);
+			});
+		});
+	});
+}
+
+Blog.delete = function(author, category, title, callback){
+	mongodb.open(function(err, db){
+		if(err){
+			return callback(err);
+		}
+
+		db.collection('blogs', function(err, collection){
+			if(err){
+				mongodb.close();
+				return callback(err);
+			}
+
+			collection.remove({
+				"author": author,
+				"category": category,
+				"title": title
+			}, {w: 1}, function(err){
+				mongodb.close();
+				if(err){
+					return callback(err);
+				}
+				callback(null);
+			});
+		});
+	});
+}
