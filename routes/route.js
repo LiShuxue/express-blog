@@ -38,7 +38,10 @@ module.exports = function(app){
 
 	//home页的路由控制
 	app.get('/', function (req, res) {
-		Blog.getAll(null, function(err, blogs){
+		//判断是否是第一页，并把请求的页数转换成 number 类型
+  		var page = req.query.p ? parseInt(req.query.p) : 1;
+		//查询并返回第 page 页的 10 篇文章
+		Blog.getTen(null, page, function(err, blogs, total){
 			if(err){
 				blogs = [];
 			}
@@ -47,7 +50,10 @@ module.exports = function(app){
 				blogs: blogs,
 				user: req.session.user,
 				success: req.flash('success').toString(),
-				error: req.flash('error').toString() 
+				error: req.flash('error').toString(),
+				page: page,
+				isFirstPage: (page - 1) === 0,
+				isLastPage: ((page-1) * 10 + blogs.length) === total
 			});
 		});
 	});
@@ -193,6 +199,7 @@ module.exports = function(app){
 
 	//用户文章列表界面
 	app.get('/u/:author', function(req, res){
+		var page = req.query.p ? parseInt(req.query.p) : 1;
 		//检查用户名是否已经存在
 		User.get(req.params.author, function(err, user){
 			if(err){
@@ -203,8 +210,8 @@ module.exports = function(app){
 				req.flash('error', req.params.author + '用户不存在！');
 				return res.redirect('/');
 			}
-			//如果存在则返回该用户的所有的文章
-			Blog.getAll(req.params.author, function(err, blogs){
+			//如果存在则返回该用户的第 page 页的 10 篇文章
+			Blog.getTen(req.params.author, page, function(err, blogs, total){
 				if (err) {
 			        req.flash('error', err); 
 			        return res.redirect('/');
@@ -214,7 +221,10 @@ module.exports = function(app){
 					blogs: blogs,
 					user: req.session.user,
 					success: req.flash('success').toString(),
-					error: req.flash('error').toString() 
+					error: req.flash('error').toString(),
+					page: page,
+					isFirstPage: (page - 1) === 0,
+					isLastPage: ((page-1) * 10 + blogs.length) === total
 				});
 			});
 		});

@@ -51,7 +51,8 @@ Blog.prototype.save = function(callback){
 	});
 }
 
-Blog.getAll = function(author, callback){
+//每次获取十篇文章来进行分页
+Blog.getTen = function(author, page, callback){
 	mongodb.open(function(err, db){
 		if(err){
 			return callback(err);
@@ -68,17 +69,24 @@ Blog.getAll = function(author, callback){
 				query.author = author;
 			}
 
-			collection.find(query).sort({time: -1}).toArray(function(err, blogs){      //按时间（`time`）排序。1是升序，也是默认的。-1是降序
-				mongodb.close();
-				if(err){
-					return callback(err);
-				}
-				blogs.forEach(function(blog) {
-					blog.htmlContent = markdown.toHTML(blog.content);
+			collection.count(query, function(err, total){
+				//根据 query 对象查询，并跳过前 (page-1)*10 个结果，返回之后的 10 个结果
+				collection.find(query,{
+					skip: (page - 1)*10,
+          			limit: 10
+				}).sort({
+					time: -1                      //按时间（`time`）排序。1是升序，也是默认的。-1是降序
+				}).toArray(function(err, blogs){
+					mongodb.close();
+					if(err){
+						return callback(err);
+					}
+					blogs.forEach(function(blog) {
+						blog.htmlContent = markdown.toHTML(blog.content);
+					});
+					callback(null, blogs, total);
 				});
-				callback(null, blogs);
 			});
-
 		});
 	});
 }

@@ -1,0 +1,9 @@
+<div class="page">
+	<hr />
+    {{#unless isFirstPage}}
+        <span class="prepage"><a title="上一页" href="?p={{lastPage page}}">上一页</a></span>
+    {{/unless}}
+    {{#unless isLastPage}}
+        <span class="nextpage"><a title="下一页" href="?p={{nextPage page}}">下一页</a></span>
+    {{/unless}}
+</div>

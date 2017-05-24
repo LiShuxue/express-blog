@@ -1,13 +1,7 @@
 {{> nav}}
 <div class="home">
 	<h1>主页</h1>
-	{{#each blogs}}
-		<p><h2><a href="u/{{author}}/{{category}}/{{title}}">{{title}}</a></h2></p>
-		<p class="info">
-			作者：<a href="u/{{author}}">{{author}}</a>
-			日期：{{time.minute}}
-		</p>
-		<div>{{{htmlContent}}}</div>
-	{{/each}}
+	{{> articleList}}
+	{{> page}}
 </div>
 

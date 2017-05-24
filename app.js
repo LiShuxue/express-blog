@@ -17,7 +17,8 @@ app.use(express.static(path.join(__dirname, 'public')));              //设置pu
 
 
 //设置模板引擎相关
-var hbs = require('hbs');                             //加载hbs模块  
+//var hbs = require('hbs');                             //加载hbs模块   
+var hbs = require('./utils/hbsHelper');               //给hbs添加一些自定义的helper
 app.set('views', path.join(__dirname, 'views'));      //设置 views 文件夹为存放视图文件的目录, 即存放模板文件的地方, __dirname 为全局变量,存储当前正在执行的脚本所在的目录。
 app.set('view engine', 'html');                       //指定模板文件的后缀名为 html
 app.engine('html', hbs.__express);                    //指定用hbs的规则渲染html文件
