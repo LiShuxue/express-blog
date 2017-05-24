@@ -15,6 +15,7 @@
 var crypto = require('crypto');                                     //crypto 是 Node.js 的一个核心模块，我们用它生成散列值来加密密码。
 var User = require('../models/user');
 var Blog = require('../models/blog');
+var Comment = require('../models/comment');
 var multer = require('multer');
 var upload = multer({dest: './upload'});
 
@@ -234,6 +235,27 @@ module.exports = function(app){
 				error: req.flash('error').toString(),
 				isSameOne: req.session.user &&  req.session.user.username === blog.author
 			});
+		});
+	});
+	app.post('/u/:author/:category/:title', function(req, res){
+		var date = new Date();
+      	var time = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+		var comment = {
+			name: req.body.name,
+			email: req.body.email,
+			website: req.body.website,
+			content: req.body.content,
+			time: time
+		};
+
+		var newComment = new Comment(req.params.author, req.params.category, req.params.title, comment);
+		newComment.save(function(err){
+			if(err){
+				req.flash('error', err);
+				return res.redirect('back');   
+			}
+			req.flash('success', '留言成功');
+			res.redirect('back');   //留言成功后返回到该文章页。
 		});
 	});
 

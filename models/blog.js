@@ -25,6 +25,7 @@ Blog.prototype.save = function(callback){
 		category: this.category,
 		title: this.title,
 		content: this.content,
+		comments: [],
 		time: time
 	};
 
