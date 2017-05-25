@@ -153,7 +153,7 @@ module.exports = function(app){
 	app.post('/publish', checkLogin);
 	app.post('/publish', function(req, res){
 		var currentUser = req.session.user;
-		var blog = new Blog(currentUser.username, req.body.category, req.body.title, req.body.content);
+		var blog = new Blog(currentUser.username, req.body.title, req.body.content);
 		blog.save(function(err, blog){
 			if(err){
 				req.flash('error', err);
@@ -231,8 +231,8 @@ module.exports = function(app){
 	});
 
 	//文章界面
-	app.get('/u/:author/:category/:title', function(req, res){
-		Blog.getOne(req.params.author, req.params.category, req.params.title, function(err, blog){
+	app.get('/u/:author/:title/:day', function(req, res){
+		Blog.getOne(req.params.author, req.params.title, req.params.day, function(err, blog){
 			if (err) {
 		        req.flash('error', err); 
 		        return res.redirect('/');
@@ -247,7 +247,7 @@ module.exports = function(app){
 			});
 		});
 	});
-	app.post('/u/:author/:category/:title', function(req, res){
+	app.post('/u/:author/:title/:day', function(req, res){
 		var date = new Date();
       	var time = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
 		var comment = {
@@ -258,7 +258,7 @@ module.exports = function(app){
 			time: time
 		};
 
-		var newComment = new Comment(req.params.author, req.params.category, req.params.title, comment);
+		var newComment = new Comment(req.params.author, req.params.title, req.params.day, comment);
 		newComment.save(function(err){
 			if(err){
 				req.flash('error', err);
@@ -270,9 +270,9 @@ module.exports = function(app){
 	});
 
 	//文章修改界面
-	app.get('/update/:author/:category/:title', checkLogin);
-	app.get('/update/:author/:category/:title', function(req, res){
-		Blog.getOne(req.params.author, req.params.category, req.params.title, function(err, blog){
+	app.get('/update/:author/:title/:day', checkLogin);
+	app.get('/update/:author/:title/:day', function(req, res){
+		Blog.getOne(req.params.author, req.params.title, req.params.day, function(err, blog){
 			if (err) {
 		        req.flash('error', err); 
 		        return res.redirect('/');
@@ -286,11 +286,11 @@ module.exports = function(app){
 			});
 		});
 	});
-	app.post('/update/:author/:category/:title', checkLogin);
-	app.post('/update/:author/:category/:title', function(req, res){
-		Blog.update(req.params.author, req.params.category, req.params.title, req.body.content, function(err){
-			var updateUrl = encodeURI('/update/' + req.params.author + '/' + req.params.category + '/' + req.params.title);
-			var articleUrl = encodeURI('/u/' + req.params.author + '/' + req.params.category + '/' + req.params.title);
+	app.post('/update/:author/:title/:day', checkLogin);
+	app.post('/update/:author/:title/:day', function(req, res){
+		Blog.update(req.params.author, req.params.title, req.params.day, req.body.content, function(err){
+			var updateUrl = encodeURI('/update/' + req.params.author + '/' + req.params.title + '/' + req.params.day);
+			var articleUrl = encodeURI('/u/' + req.params.author + '/' + req.params.title + '/' + req.params.day);
 			
 			if (err) {
 		        req.flash('error', err); 
@@ -302,9 +302,9 @@ module.exports = function(app){
 	});
 
 	//文章删除
-	app.get('/delete/:author/:category/:title', checkLogin);
-	app.get('/delete/:author/:category/:title', function(req, res){
-		Blog.delete(req.params.author, req.params.category, req.params.title, function(err){
+	app.get('/delete/:author/:title/:day', checkLogin);
+	app.get('/delete/:author/:title/:day', function(req, res){
+		Blog.delete(req.params.author, req.params.title, req.params.day, function(err){
 			if (err) {
 		        req.flash('error', err); 
 		        return res.redirect('/');

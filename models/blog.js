@@ -1,9 +1,8 @@
 var mongodb = require('../db/db');
 var markdown = require('markdown').markdown;
 
-function Blog(author, category, title, content){
+function Blog(author, title, content){
 	this.author = author;
-	this.category = category;
 	this.title = title;
 	this.content = content;
 }
@@ -22,7 +21,6 @@ Blog.prototype.save = function(callback){
 
 	var blog = {
 		author: this.author,
-		category: this.category,
 		title: this.title,
 		content: this.content,
 		comments: [],
@@ -91,7 +89,7 @@ Blog.getTen = function(author, page, callback){
 	});
 }
 
-Blog.getOne = function(author, category, title, callback){
+Blog.getOne = function(author, title, day, callback){
 	mongodb.open(function(err, db){
 		if(err){
 			return callback(err);
@@ -105,8 +103,8 @@ Blog.getOne = function(author, category, title, callback){
 
 			collection.findOne({
 				"author": author,
-				"category": category,
-				"title": title
+				"title": title,
+				"time.day": day
 			}, function(err, blog){
 				mongodb.close();
 				if(err){
@@ -119,7 +117,7 @@ Blog.getOne = function(author, category, title, callback){
 	});
 }
 
-Blog.update = function(author, category, title, content, callback){
+Blog.update = function(author, title, day, content, callback){
 	mongodb.open(function(err, db){
 		if(err){
 			return callback(err);
@@ -133,8 +131,8 @@ Blog.update = function(author, category, title, content, callback){
 
 			collection.update({
 				"author": author,
-				"category": category,
-				"title": title
+				"title": title,
+				"time.day": day
 			}, {
 				$set:{"content": content}
 			}, function(err){
@@ -148,7 +146,7 @@ Blog.update = function(author, category, title, content, callback){
 	});
 }
 
-Blog.delete = function(author, category, title, callback){
+Blog.delete = function(author, title, day, callback){
 	mongodb.open(function(err, db){
 		if(err){
 			return callback(err);
@@ -162,8 +160,8 @@ Blog.delete = function(author, category, title, callback){
 
 			collection.remove({
 				"author": author,
-				"category": category,
-				"title": title
+				"title": title,
+				"time.day": day
 			}, {w: 1}, function(err){
 				mongodb.close();
 				if(err){

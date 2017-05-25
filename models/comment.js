@@ -1,9 +1,9 @@
 var mongodb = require('../db/db');
 
 //留言对象是针对于特定的某篇文章的, 所以前三个是文章的特性，后一个comment对象才是留言
-function Comment(author, category, title, comment){
+function Comment(author, title, day, comment){
     this.author = author;
-    this.category = category;
+    this.day = day;
     this.title = title;
     this.comment = comment;
 }
@@ -12,7 +12,7 @@ module.exports = Comment;
 
 Comment.prototype.save = function(callback){
     var author = this.author;
-    var category = this.category;
+    var day = this.day;
     var title = this.title;
     var comment = this.comment;
     
@@ -27,7 +27,7 @@ Comment.prototype.save = function(callback){
             }
             collection.update({
                 "author": author,
-				"category": category,
+				"time.day": day,
 				"title": title
             }, {
 			    $push:{"comments": comment}

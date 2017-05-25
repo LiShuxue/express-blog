@@ -1,14 +1,10 @@
 <div class="comment">
 	<hr />
     {{#each blog.comments}}
-        <p>
-            <a href="{{website}}">{{name}}</a>
-            <span class="info"> 回复于 {{time}}</span>
-        </p>
+        <p>{{name}} 回复于 {{time}}</p>
         <p>{{content}}</p>
     {{/each}}
     <hr />
-    <br />
     <form method="post">
         姓名：<input type="text" name="name"/><br />
         邮箱：<input type="text" name="email"/><br />

@@ -1,14 +1,14 @@
 {{> nav}}
 <div class="article">
 	<h1>文章页面</h1>
-	<p><h2><a href="/u/{{blog.author}}/{{blog.category}}/{{blog.title}}">{{blog.title}}</a></h2></p>
+	<p><h2><a href="/u/{{blog.author}}/{{blog.title}}/{{blog.time.day}}">{{blog.title}}</a></h2></p>
 	<p class="info">
 		作者：<a href="/u/{{blog.author}}">{{blog.author}}</a>
 		日期：{{blog.time.minute}}
 	</p>
 	{{#if isSameOne}}
-		<span><a href="/update/{{blog.author}}/{{blog.category}}/{{blog.title}}">编辑</a></span>
-		<span><a href="/delete/{{blog.author}}/{{blog.category}}/{{blog.title}}">删除</a></span>
+		<span><a href="/update/{{blog.author}}/{{blog.title}}/{{blog.time.day}}">编辑</a></span>
+		<span><a href="/delete/{{blog.author}}/{{blog.title}}/{{blog.time.day}}">删除</a></span>
 	{{/if}}
 	<div>{{{blog.htmlContent}}}</div>
 </div>
