@@ -153,7 +153,8 @@ module.exports = function(app){
 	app.post('/publish', checkLogin);
 	app.post('/publish', function(req, res){
 		var currentUser = req.session.user;
-		var blog = new Blog(currentUser.username, req.body.title, req.body.content);
+		var tags = [req.body.tag1, req.body.tag2, req.body.tag3];
+		var blog = new Blog(currentUser.username, req.body.title, tags, req.body.content);
 		blog.save(function(err, blog){
 			if(err){
 				req.flash('error', err);
@@ -311,6 +312,34 @@ module.exports = function(app){
 		    } 
 			req.flash('success', '删除成功!');
     		res.redirect('/');
+		});
+	});
+
+	//标签页
+	app.get('/tags', function(req, res){
+		Blog.getTags(function(err, tags){
+			res.render('tags', { 
+				title: '标签',
+				tags: tags,
+				user: req.session.user,
+				success: req.flash('success').toString(),
+				error: req.flash('error').toString()
+			});
+		});
+	});
+	app.get('/tags/:tag', function (req, res) {
+		Blog.getBlogByTag(req.params.tag, function (err, blogs) {
+			if (err) {
+				req.flash('error',err); 
+				return res.redirect('/');
+			}
+			res.render('tag', {
+				title: 'TAG:' + req.params.tag,
+				blogs: blogs,
+				user: req.session.user,
+				success: req.flash('success').toString(),
+				error: req.flash('error').toString()
+			});
 		});
 	});
 };                              

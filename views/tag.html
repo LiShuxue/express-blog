@@ -1,0 +1,8 @@
+{{> nav}}
+<div class="blog-tag">
+    <ul class="blog">
+        {{#each blogs}}
+            <li><a href="/u/{{author}}/{{title}}/{{time.day}}"><h3>{{title}}</h3></a></li>
+        {{/each}}
+    </ul>
+</div>

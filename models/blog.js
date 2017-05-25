@@ -1,9 +1,10 @@
 var mongodb = require('../db/db');
 var markdown = require('markdown').markdown;
 
-function Blog(author, title, content){
+function Blog(author, title, tags, content){
 	this.author = author;
 	this.title = title;
+	this.tags = tags;
 	this.content = content;
 }
 
@@ -22,6 +23,7 @@ Blog.prototype.save = function(callback){
 	var blog = {
 		author: this.author,
 		title: this.title,
+		tags: this.tags,
 		content: this.content,
 		comments: [],
 		time: time
@@ -112,6 +114,60 @@ Blog.getOne = function(author, title, day, callback){
 				}
 				blog.htmlContent = markdown.toHTML(blog.content);
 				callback(null, blog);
+			});
+		});
+	});
+}
+
+Blog.getTags = function(callback){
+	mongodb.open(function(err, db){
+		if(err){
+			return callback(err);
+		}
+
+		db.collection('blogs', function(err, collection){
+			if(err){
+				mongodb.close();
+				return callback(err);
+			}
+
+			collection.distinct("tags", function(err, tags){
+				mongodb.close();
+				if(err){
+					return callback(err);
+				}
+				callback(null, tags);
+			});
+		});
+	});
+}
+
+Blog.getBlogByTag = function(tag, callback){
+	mongodb.open(function(err, db){
+		if(err){
+			return callback(err);
+		}
+
+		db.collection('blogs', function(err, collection){
+			if(err){
+				mongodb.close();
+				return callback(err);
+			}
+
+			//查询所有 tags 数组内包含 tag 的文档
+      		//并返回只含有 name、time、title 组成的数组
+			collection.find({"tags": tag}, {
+				"author": 1,
+				"title": 1,
+				"time": 1
+			}).sort({
+				time: -1                      //按时间（`time`）排序。1是升序，也是默认的。-1是降序
+			}).toArray(function(err, blogs){
+				mongodb.close();
+				if(err){
+					return callback(err);
+				}
+				callback(null, blogs);
 			});
 		});
 	});
